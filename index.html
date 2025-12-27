@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotating Parts Storage Rack - Stay Organized</title>
+    
+    <link rel="preload" as="image" href="images/01-hero.jpg">
+    
+    <style>
+        /* --- 1. 基础变量 --- */
+        :root {
+            --bg-color: #fcfbf7;
+            --orange-color: #ff4d00;
+            --brown-dark: #3e2b26;
+            --brown-light: #594a42;
+            --text-dark: #333;
+            
+            /* 占位背景色 */
+            --placeholder-hero: #EAEAEA;
+            --placeholder-black: #000000;
+            --placeholder-orange: #FF5500;
+            --placeholder-blue: #D0E8F2;
+            --placeholder-dark: #222222;
+            --placeholder-cream: #FFFAF0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            margin: 0;
+            background-color: #fff;
+        }
+
+        section {
+            width: 100%;
+            position: relative;
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- 2. 动画控制 --- */
+        img.reveal-img, video.reveal-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            opacity: 0; 
+            transform: translateY(30px); 
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        img.loaded, video.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- 3. Hero 区域样式 (PC端核心设置) --- */
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            background-color: var(--placeholder-hero);
+            overflow: hidden;
+        }
+
+        /* Hero 图片 */
+        .hero-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* 保持重心靠右 */
+            object-position: 80% center; 
+            z-index: 1;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        /* 内容容器 (标题 + 表单) */
+        .hero-content {
+            position: absolute;
+            top: 50%; 
+            left: 4%; 
+            
+            /* [PC端定位] 向右偏移 50px，垂直居中 */
+            transform: translate(50px, -50%);
+            
+            width: 40%; 
+            max-width: 400px;
+            
+            z-index: 10;
+            text-align: left;
+        }
+
+        .hero-title {
+            font-size: 3.2rem; 
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--brown-dark);
+            margin-bottom: 0.8rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--brown-light);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .launch-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--brown-dark);
+            margin-bottom: 12px;
+        }
+
+        .ks-logo {
+            height: 20px; 
+            width: auto;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* 表单区域 */
+        .hero-form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .hero-input {
+            flex: 1; 
+            padding: 15px 16px;
+            border: 1px solid rgba(0,0,0,0.1); 
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            min-width: 0; 
+        }
+
+        .hero-btn {
+            background-color: var(--orange-color);
+            color: white;
+            border: none;
+            padding: 15px 25px; 
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            white-space: nowrap;
+            transition: background 0.3s;
+            box-shadow: 0 4px 6px rgba(255, 77, 0, 0.25);
+        }
+
+        .hero-btn:hover {
+            background-color: #e04400;
+        }
+        
+        .hero-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .discount-note {
+            font-size: 0.9rem;
+            color: var(--brown-light);
+            font-weight: 500;
+        }
+        
+        .discount-highlight {
+            color: var(--orange-color);
+            font-weight: 800;
+        }
+
+        /* --- 4. 移动端适配 (核心修复版) --- */
+        @media (max-width: 900px) {
+            .hero-section {
+                height: auto; /* 取消固定高度 */
+                min-height: auto;
+                flex-direction: column-reverse; /* 图片在上，文字在下 */
+                background: #fcfbf7; 
+                padding-bottom: 40px;
+            }
+
+            .hero-img {
+                position: relative; 
+                
+                /* [修复重点] 使用自动高度和 contain，保证图片完整显示且居中 */
+                width: 100%;
+                height: auto; 
+                min-height: 250px;
+                object-fit: contain; 
+                object-position: center bottom;
+                
+                margin-bottom: -10px;
+            }
+
+            .hero-content {
+                position: relative;
+                top: auto; left: auto; 
+                /* 手机端取消偏移 */
+                transform: none; 
+                
+                width: 100%; 
+                max-width: 100%; 
+                padding: 30px 24px 0;
+                
+                /* 手机端文字居中更美观 */
+                text-align: center;
+                background: transparent; 
+            }
+
+            .hero-title { 
+                font-size: 2.4rem; 
+                margin-top: 10px;
+            }
+            
+            /* 手机端让 Kickstarter logo 也居中 */
+            .launch-bar {
+                justify-content: center;
+            }
+
+            .hero-form-group { flex-direction: column; }
+            .hero-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Rotating Parts<br>Storage Rack</h1>
+                <p class="hero-subtitle">For makers who love to stay organized</p>
+
+                <div class="launch-bar">
+                    <span>Launching Soon on</span>
+                    <img src="images/kickstarter-logo-green.png" alt="Kickstarter" class="ks-logo">
+                </div>
+
+                <form id="signup-form-top" class="signup-form">
+                    <div class="hero-form-group">
+                        <input type="email" class="hero-input" placeholder="Email" required>
+                        <button type="submit" class="hero-btn">Sign Up</button>
+                    </div>
+                </form>
+
+                <p class="discount-note">Sign Up Now to Reserve the Limited <span class="discount-highlight">50% OFF!</span></p>
+            </div>
+            
+            <img src="images/01-hero.jpg" 
+                 alt="Hero Background" 
+                 fetchpriority="high"
+                 class="hero-img"> 
+        </section>
+
+        <section style="background-color: var(--placeholder-black);">
+            <video autoplay loop muted playsinline class="reveal-img" width="1920" height="1080" poster="images/video-poster.jpg" preload="metadata" style="object-fit: cover;">
+                <source src="images/02-rotate.mp4" type="video/mp4">
+            </video>
+        </section>
+
+        <section style="background-color: var(--placeholder-orange);">
+            <img src="images/03-marquee.jpg" alt="Brand" loading="lazy" width="1920" height="200" class="reveal-img">
+        </section>
+        <section style="background-color: var(--placeholder-dark);">
+            <img src="images/04-painpoint.jpg" alt="Painpoint" loading="lazy" width="1920" height="1080" class="reveal-img">
+        </section>
+        <section style="background-color: var(--placeholder-orange);">
+            <img src="images/05-feature-org.jpg" alt="Feature 1" loading="lazy" width="1920" height="800" class="reveal-img">
+        </section>
+        <section style="background-color: var(--placeholder-blue);">
+            <img src="images/06-feature-blue.jpg" alt="Feature 2" loading="lazy" width="1920" height="800" class="reveal-img">
+        </section>
+        <section style="background-color: var(--placeholder-hero);">
+            <img src="images/07-users.jpg" alt="Users" loading="lazy" width="1920" height="1080" class="reveal-img">
+        </section>
+        <section style="background-color: var(--placeholder-cream);">
+            <img src="images/08-benefit-1.jpg" alt="Benefit 1" loading="lazy" width="1920" height="600" class="reveal-img">
+        </section>
+        <section style="background-color: var(--placeholder-cream);">
+            <img src="images/09-benefit-2.jpg" alt="Benefit 2" loading="lazy" width="1920" height="600" class="reveal-img">
+        </section>
+
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Rotating Parts<br>Storage Rack</h1>
+                <p class="hero-subtitle">For makers who love to stay organized</p>
+
+                <div class="launch-bar">
+                    <span>Launching Soon on</span>
+                    <img src="images/kickstarter-logo-green.png" alt="Kickstarter" class="ks-logo">
+                </div>
+
+                <form id="signup-form-bottom" class="signup-form">
+                    <div class="hero-form-group">
+                        <input type="email" class="hero-input" placeholder="Email" required>
+                        <button type="submit" class="hero-btn">Sign Up</button>
+                    </div>
+                </form>
+
+                <p class="discount-note">Sign Up Now to Reserve the Limited <span class="discount-highlight">50% OFF!</span></p>
+            </div>
+            <img src="images/10-footer.jpg" alt="Footer Background" loading="lazy" class="hero-img"> 
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // --- 1. 图片显现动画 (保持不变) ---
+            const images = document.querySelectorAll('.reveal-img');
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        if (target.tagName === 'IMG') {
+                            if (target.complete) target.classList.add('loaded');
+                            else target.onload = () => target.classList.add('loaded');
+                            setTimeout(() => target.classList.add('loaded'), 100);
+                        } else {
+                            target.classList.add('loaded');
+                        }
+                        observer.unobserve(target);
+                    }
+                });
+            }, { rootMargin: "0px 0px -100px 0px", threshold: 0.1 });
+            images.forEach(img => observer.observe(img));
+
+            // ============================================
+            // 2. 核心逻辑：表单提交 -> Google Script -> Stripe
+            // ============================================
+
+            // 你的 GAS Web App URL (保持文件中的原地址)
+            const GAS_URL = "https://script.google.com/macros/s/AKfycbzEWnkSbghlLAc7N-5muAPNVqQQoW2yZPQU_FPxM9wNJIT0xWzCmlcgWtGvFRnaz8Ct/exec";
+
+            // 你的 Stripe Payment Link (保持文件中的原地址)
+            const STRIPE_BASE_URL = "https://buy.stripe.com/test_dRm6oHewR4O6dTW1ABdjO01";
+
+            function handleFormSubmit(event) {
+                event.preventDefault();
+                const form = event.target;
+                const emailInput = form.querySelector('input[type="email"]'); // 自动获取表单内的 email 输入框
+                const btn = form.querySelector('button');
+                const email = emailInput.value;
+
+                if (!email) return;
+
+                // 防止重复点击
+                btn.innerText = 'Processing...';
+                btn.disabled = true;
+
+                // 🟢 [修正点 1] 构造正确的数据包
+                // 必须包含 type: 'signup'，否则 GAS 后端无法识别是注册请求
+                const data = {
+                    type: 'signup',
+                    email: email
+                };
+
+                // 发送 POST 请求给 GAS
+                fetch(GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(data), // 🟢 [修正点 2] 发送包含 type 的完整对象
+                    headers: { "Content-Type": "text/plain;charset=utf-8" } // 避免 CORS 预检问题
+                })
+                .then(response => {
+                    console.log("GAS Success");
+                    // 🟢 [修正点 3] 成功后跳转 Stripe，并带上 email 参数
+                    // 使用 separator 逻辑智能判断 URL 是否已有问号
+                    const separator = STRIPE_BASE_URL.includes('?') ? '&' : '?';
+                    window.location.href = `${STRIPE_BASE_URL}${separator}prefilled_email=${encodeURIComponent(email)}`;
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    // 即使报错（如网络波动），为了不阻断用户购买，依然强制跳转
+                    const separator = STRIPE_BASE_URL.includes('?') ? '&' : '?';
+                    window.location.href = `${STRIPE_BASE_URL}${separator}prefilled_email=${encodeURIComponent(email)}`;
+                });
+            }
+
+            // 🟢 [修正点 4] 绑定所有表单
+            // 同时激活页面顶部的 #signup-form-top 和底部的 #signup-form-bottom
+            document.querySelectorAll('.signup-form').forEach(form => form.addEventListener('submit', handleFormSubmit));
+        });
+    </script>
+</body>
+</html>
